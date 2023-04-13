@@ -1,7 +1,7 @@
 import random
 import requests
 
-def get_categories():
+def get_categories(): #need for front-end.  returns catgory list json
     """
     Retrieve the trivia categories from OpenTDB API.
 
@@ -14,7 +14,7 @@ def get_categories():
     return trivia_categories
 
 
-def print_categories(categories):
+def print_categories(categories): # change for front-end to display each category
     """
     Print the list of trivia categories along with their IDs.
 
@@ -26,20 +26,21 @@ def print_categories(categories):
         print(f"{category['id']}: {category['name']}")
 
 
-def get_user_input():
+def get_user_input(): # change for frontend for input to be user selection
     """
     Retrieve user input for the trivia category ID and difficulty level.
 
     Returns:
         A tuple containing the trivia category ID and difficulty level.
     """
+
     # Ideally enter the name rather than ID
     user_question_category = int(input("Enter category ID: "))
     user_difficulty_choice = input("Difficulty: Easy, Medium or Hard: ")
     return user_question_category, user_difficulty_choice
 
 
-def get_questions(category, difficulty):
+def get_questions(category, difficulty): # returns quiz questions for frontend
     """
     Retrieve the trivia questions from OpenTDB API for the given category and difficulty level.
 
@@ -50,13 +51,14 @@ def get_questions(category, difficulty):
     Returns:
         A list of dictionaries, each containing a trivia question, its answer options, and the correct answer.
     """
+
     url = "https://opentdb.com/api.php"
     params = {
         "amount": 10,
         "category": category,
         "difficulty": difficulty,
     }
-    response = requests.get(url, params=params)
+    response = requests.get(url, params=params, timeout=8)
     if response.status_code == 200:
         questions = response.json()["results"]
         return questions
@@ -64,13 +66,14 @@ def get_questions(category, difficulty):
         raise Exception(f"Error: {response.status_code}")
 
 
-def ask_questions(questions):
+def ask_questions(questions): # change for frontend
     """
     Ask the trivia questions and check the user's answers.
 
     Args:
         questions: A list of dictionaries, each containing a trivia question, its answer options, and the correct answer.
     """
+
     for i, question in enumerate(questions):
         print(f"Question {i+1}: {question['question']}")
         print(f"Options:")
