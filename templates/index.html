@@ -1,0 +1,23 @@
+{% extends "base.html" %} {% block content %}
+<div class="intro-container">
+  <div class="main-container">
+    <h1>Have fun playing this Quiz game and help us to save this drowning person!</h1>
+    <p>
+        Choose the category and level of difficulty to get started!
+    </p>
+    <form method="POST">
+      {{ form.hidden_tag() }} {{ form.country.label }} {{form.country
+      (class="input_form", placeholder="Select country")}}
+      <br />
+      {{ form.people.label}} {{form.people (class='input_form')}}
+      <br />
+      {{form.days.label}} {{form.days (class='input_form')}}
+      <br />
+      {{form.budget.label}} {{form.budget}}
+      <br />
+      {{ form.submit() }}
+    </form>
+  </div>
+</div>
+
+{% endblock %}
