@@ -66,42 +66,38 @@ def get_questions(category, difficulty): # returns quiz questions for frontend
         raise Exception(f"Error: {response.status_code}")
 
 
-def ask_questions(questions): # change for frontend
-    """
-    Ask the trivia questions and check the user's answers.
-
-    Args:
-        questions: A list of dictionaries, each containing a trivia question, its answer options, and the correct answer.
-    """
-
+def ask_questions(questions, players):
+    scores = {player: 0 for player in players}  # initialize scores dictionary with 0 for each player
     for i, question in enumerate(questions):
         print(f"Question {i+1}: {question['question']}")
-        print(f"Options:")
-        # Combines the correct and incorrect answer then shuffles
+        print("Options:")
         answer_options = question["incorrect_answers"]
         answer_options.append(question["correct_answer"])
         random.shuffle(answer_options)
-        # Return the below for frontend to display each possible answer
+        for j, option in enumerate(answer_options):
+            print(f"{j+1}. {option}")
+        for player in players:
+            answer = int(input(f"{player}, answer: "))
+            if answer == answer_options.index(question['correct_answer'])+1:
+                scores[player] += 1  # add 1 to the current player's score
+                print(f"{player} is correct!")
+            else:
+                print(f"{player} is incorrect.")
+    print("Final scores:")
+    for player, score in scores.items():
+        print(f"{player}: {score}")
 
-        print(answer_options)
-        # Takes user input at the moment rather than selecting option
-        answer = input("Answer:")
-        if answer == question['correct_answer']:
-            print(f"Correct: The answer is {question['correct_answer']}")
-        else:
-            print(f"Wrong: The answer is {question['correct_answer']}")
 
 
 def run_quiz():
     """
     Run the trivia quiz game by calling the appropriate functions.
     """
-    
+    players = ['Player 1', 'Player 2']  # define the list of players
     categories = get_categories()
     print_categories(categories)
     category, difficulty = get_user_input()
     questions = get_questions(category, difficulty)
-    ask_questions(questions)
-
+    ask_questions(questions, players)
 
 run_quiz()

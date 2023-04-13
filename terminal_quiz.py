@@ -1,7 +1,26 @@
 import random
 import requests
+import sqlite3
+
 
 scores = {}
+
+score_board = [
+    ]
+
+def database_scores():
+    connection = sqlite3.connect("user.db")
+    cursor = connection.cursor()
+
+    # cursor.execute("create table user (player text, cur_score integer)")
+
+    cursor.executemany("INSERT INTO user values (?, ?)", score_board)
+
+    for row in cursor.execute("SELECT * FROM user"):
+        print(row)
+
+    connection.commit()
+    connection.close()
 
 def get_categories(): #need for front-end.  returns catgory list json
     """
@@ -53,7 +72,7 @@ def get_questions(category, difficulty): # returns quiz questions for frontend
 
     url = "https://opentdb.com/api.php"
     params = {
-        "amount": 10,
+        "amount": 2,
         "category": category,
         "difficulty": difficulty,
     }
@@ -84,6 +103,7 @@ def ask_questions(questions, players):
         print(f"The correct answer is {question['correct_answer']}")
     print("Final scores:")
     for player, score in scores.items():
+        score_board.append([player, score])
         print(f"{player}: {score}")
 
 def run_quiz():
@@ -96,10 +116,8 @@ def run_quiz():
     category, difficulty, players = get_user_input()
     questions = get_questions(category, difficulty)
     ask_questions(questions, players)
-
+    
 
 run_quiz()
-
-
-import random
+database_scores()
 
