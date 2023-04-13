@@ -77,9 +77,12 @@ def ask_questions(questions): # change for frontend
     for i, question in enumerate(questions):
         print(f"Question {i+1}: {question['question']}")
         print(f"Options:")
+        # Combines the correct and incorrect answer then shuffles
         answer_options = question["incorrect_answers"]
         answer_options.append(question["correct_answer"])
         random.shuffle(answer_options)
+        # Return the below for frontend to display each possible answer
+
         print(answer_options)
         # Takes user input at the moment rather than selecting option
         answer = input("Answer:")
@@ -93,6 +96,7 @@ def run_quiz():
     """
     Run the trivia quiz game by calling the appropriate functions.
     """
+    
     categories = get_categories()
     print_categories(categories)
     category, difficulty = get_user_input()
