@@ -1,30 +1,38 @@
 import random
 import requests
 
-url = "https://opentdb.com/api.php"
+def get_categories():
+    cat_url = 'https://opentdb.com/api_category.php'
+    cat_response = requests.get(cat_url)
+    trivia_categories = cat_response.json()["trivia_categories"]
+    return trivia_categories
 
-cat_url = 'https://opentdb.com/api_category.php'
+def print_categories(categories):
+    print("Please select a category:")
+    for category in categories:
+        print(f"{category['id']}: {category['name']}")
 
-cat_response = requests.get(cat_url)
-trivia_categories = cat_response.json()["trivia_categories"]
+def get_user_input():
+    user_question_category = int(input("Enter category ID: "))
+    user_difficulty_choice = input("Difficulty: Easy, Medium or Hard: ")
+    return user_question_category, user_difficulty_choice
 
-print("Please select a category:")
-for category in trivia_categories:
-    print(f"{category['id']}: {category['name']}")
+def get_questions(category, difficulty):
+    url = "https://opentdb.com/api.php"
+    params = {
+        "amount": 10, 
+        "category": category, 
+        "difficulty": difficulty,     
+    }
+    response = requests.get(url, params=params)
+    if response.status_code == 200:
+        questions = response.json()["results"]
+        return questions
+    else:
+        raise Exception(f"Error: {response.status_code}")
 
-user_question_category = int(input("Enter category ID: "))
-user_difficulty_choice = input("Pick a difficulty: Easy, Medium or Hard: ")
 
-params = {
-    "amount": 10, 
-    "category": {user_question_category}, 
-    "difficulty": "{user_difficulty_choice}",     
-}
-
-response = requests.get(url, params=params)
-
-if response.status_code == 200:
-    questions = response.json()["results"]
+def ask_questions(questions):
     for i, question in enumerate(questions):
         print(f"Question {i+1}: {question['question']}")
         print(f"Options:")
@@ -37,5 +45,12 @@ if response.status_code == 200:
             print(f"Correct: The answer is {question['correct_answer']}")
         else:
             print(f"Wrong: The answer is {question['correct_answer']}")
-else:
-    print(f"Error: {response.status_code}")
+
+def run_quiz():
+    categories = get_categories()
+    print_categories(categories)
+    category, difficulty = get_user_input()
+    questions = get_questions(category, difficulty)
+    ask_questions(questions)
+
+run_quiz()
